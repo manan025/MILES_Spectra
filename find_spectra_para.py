@@ -31,7 +31,7 @@ data = []
 for x in raw_data:
     c = [x['Name'],x['Spect Name'],x['Spect Type'],x['Teff'],x['log g'],x['Fe/H'],x['class']]
     data.append(c)
-
+    
 # Binary Search Algorithm to boost speed of search
 def search(l, q, parameters):
     # l is the list in which you have to search
@@ -46,7 +46,16 @@ def search(l, q, parameters):
         elif name > q:
             end = mid - 1
         else:
-            return mid
+            if parameters:
+                curr = l[mid]
+                # check all values
+                ret_c = parameters[0] == curr[0].strip() and parameters[1] == curr[3].strip() and parameters[2] == curr[4].strip() and parameters[3] == curr[5].strip()
+                if ret_c:
+                    return mid
+                else:
+                    start += 1
+            else:
+                return mid
     return -1
 
 # Defing folders
@@ -55,10 +64,13 @@ destination = r'spectra/'
 
 for star in stars:
     ans = search(data, star[0], star)
+    if ans == -1:
+        print('Relavant Data not found for', *star)
+        continue
     file_name = data[ans][1] + ".fits"
     new_file_name = star[0] + ".fits"
     shutil.copy2(source + file_name, destination + new_file_name)
-    
+
 for path in os.listdir(destination):
     if os.path.isfile(os.path.join(destination, path)):
         currentpath = os.path.join(destination, path)
@@ -66,7 +78,11 @@ for path in os.listdir(destination):
         # Name of star
         n_star = path.rsplit('.', maxsplit=1)[0]
         # get information
-        title = data[search(data, n_star, None)]
+        s = search(data, n_star, None)
+        if s == -1:
+            print("Data not found for", n_star)
+            continue
+        title = data[s]
         # Giving in None as parameters because it is not necessary and 
         # I am a bit lazy to change at other places
         title = title[0] + " " + "Teff: " + title[3] + " log(g): " + title[4] + " Fe/H: " + title[5]
@@ -85,3 +101,4 @@ for path in os.listdir(destination):
         plt.ylabel('Normalized flux')
         plt.savefig(fname="spectra_images/" + n_star + ".jpg")
         plt.show()
+

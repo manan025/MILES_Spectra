@@ -8,7 +8,9 @@
 4. spectra: Generated spectra
 5. spectra_images: Generated jpg images of spectras
 6. find_spectra.ipynb: Jupyter Notebook containing code used for generating spectra
-7. find_spectra.py: Python file for the same as above
+7. find_spectra_para.ipynb: Jupyter Notebook containing code used for generating spectra of stars and it checks for all the parameters
+8. find_spectra.py: Python file for 6
+9. find_spectra_para.py: Python file for 7
 
 ## Before Running:
 Make sure you have installed all packages.
